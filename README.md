@@ -15,15 +15,15 @@ Usage
 The [examples][examples] are a good place to start. The minimal you'll need to
 have is:
 
-<?php
+	<?php
 
-require './shiftplanning.php';
+	require './shiftplanning.php';
 
-$shiftplanning = new shiftplanning(
-	array(
-		'key' => 'XXXXXXXXXXXXXXXXXX' // enter your developer key
-	)
-);
+	$shiftplanning = new shiftplanning(
+		array(
+			'key' => 'XXXXXXXXXXXXXXXXXX' // enter your developer key
+		)
+	);
 
 To make [API][API] calls:
 
@@ -38,11 +38,11 @@ To make [API][API] calls:
 
 Logged in vs Logged out:
 
-if ($session = $shiftplanning->getSession( );) {
-	// LOGGED IN
-} else {
-	// LOGGED OUT
-}
+	if ($session = $shiftplanning->getSession( );) {
+	  // LOGGED IN
+	} else {
+	  // LOGGED OUT
+	}
 
 [examples]: https://github.com/shiftplanning/PHP-SDK/tree/master/examples/
 [API]: http://www.shiftplanning.com/api/
