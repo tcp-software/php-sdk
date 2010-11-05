@@ -27,7 +27,7 @@ have is:
 
 To make [API][API] calls:
 
-	$response = $shiftplanning->setRequest(
+	$shifts = $shiftplanning->setRequest(
 		array(
 			'module' => 'schedule.shifts',
 			'start_date' => 'today',
@@ -38,7 +38,7 @@ To make [API][API] calls:
 
 Logged in vs Logged out:
 
-	if ($session = $shiftplanning->getSession( );) {
+	if ($session = $shiftplanning->getSession( )) {
 	  // LOGGED IN
 	} else {
 	  // LOGGED OUT
