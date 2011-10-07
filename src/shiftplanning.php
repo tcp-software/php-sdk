@@ -158,6 +158,9 @@ class shiftplanning
 		{// logout successful, remove local session data
 			unset( $_SESSION['token'] );
 			unset( $_SESSION['data'] );
+			
+			# REMOVE COOKIE
+			setcookie("mobile_token", $this->response['token'][0], time()-(30*86400), "/", ".shiftplanning.com");
 		}
 		return $logout;
 	}
