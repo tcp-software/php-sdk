@@ -14,5 +14,3 @@ return array(
 	8 => "File doesn't exist.",
 	9 => 'Could not find the correct mime for the file supplied.',
 );
-				
-				

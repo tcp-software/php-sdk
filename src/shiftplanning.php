@@ -8,53 +8,53 @@
 
 /**
  * Quick Access ShiftPlanning SDK Methods:
- * doLogin($array_of_user_data )
+ * doLogin($array_of_user_data)
  * doLogout()
  * getMessages()
- * getMessageDetails($message_id )
- * createMessage($array_of_message_data )
- * deleteMessage($message_id )
+ * getMessageDetails($message_id)
+ * createMessage($array_of_message_data)
+ * deleteMessage($message_id)
  * getWallMessages()
- * createWallMessage($array_of_message_data )
- * deleteWallMessage($message_id, $array_of_other_message_data )
+ * createWallMessage($array_of_message_data)
+ * deleteWallMessage($message_id, $array_of_other_message_data)
  * getEmployees()
- * getEmployeeDetails($employee_id_number )
- * updateEmployee($employee_id, $array_of_updated_employee_data )
- * createEmployee($array_of_employee_data )
- * deleteEmployee($employee_id )
+ * getEmployeeDetails($employee_id_number)
+ * updateEmployee($employee_id, $array_of_updated_employee_data)
+ * createEmployee($array_of_employee_data)
+ * deleteEmployee($employee_id)
  * getStaffSkills()
- * getStaffSkillDetails($skill_id )
- * createStaffSkill($array_of_skill_data )
- * updateStaffSkill($skill_id, $array_of_skill_data )
- * deleteStaffSkill($skill_id )
- * createPing($array_of_ping_data )
+ * getStaffSkillDetails($skill_id)
+ * createStaffSkill($array_of_skill_data)
+ * updateStaffSkill($skill_id, $array_of_skill_data)
+ * deleteStaffSkill($skill_id)
+ * createPing($array_of_ping_data)
  * getSchedules()
- * getScheduleDetails($schedule_id )
- * createSchedule($array_of_schedule_data )
- * updateSchedule($schedule_id, $array_of_schedule_data )
- * deleteSchedule($schedule_id )
+ * getScheduleDetails($schedule_id)
+ * createSchedule($array_of_schedule_data)
+ * updateSchedule($schedule_id, $array_of_schedule_data)
+ * deleteSchedule($schedule_id)
  * getShifts()
- * getShiftDetails($shift_id )
- * updateShift($shift_id, $array_of_shift_data )
- * createShift($array_of_shift_data )
- * deleteShift($shift_id )
- * getVacationSchedules($time_period_array )	// e.g. getVacationSchedules( array( 'start' => '', 'end' => '' ));
- * getVacationScheduleDetails($schedule_id )
- * createVacationSchedule($array_of_schedule_data )
- * updateVacationSchedule($schedule_id, $array_of_schedule_data )
- * deleteVacationSchedule($schedule_id )
+ * getShiftDetails($shift_id)
+ * updateShift($shift_id, $array_of_shift_data)
+ * createShift($array_of_shift_data)
+ * deleteShift($shift_id)
+ * getVacationSchedules($time_period_array)	// e.g. getVacationSchedules( array( 'start' => '', 'end' => ''));
+ * getVacationScheduleDetails($schedule_id)
+ * createVacationSchedule($array_of_schedule_data)
+ * updateVacationSchedule($schedule_id, $array_of_schedule_data)
+ * deleteVacationSchedule($schedule_id)
  * getScheduleConflicts()
  * getAdminSettings()
- * updateAdminSettings($array_of_new_settings )
+ * updateAdminSettings($array_of_new_settings)
  * getAdminFiles()
- * getAdminFileDetails($file_id )
- * updateAdminFile($file_id, $array_of_file_data )
- * createAdminFile($array_of_file_data )
- * deleteAdminFile($file_id )
+ * getAdminFileDetails($file_id)
+ * updateAdminFile($file_id, $array_of_file_data)
+ * createAdminFile($array_of_file_data)
+ * deleteAdminFile($file_id)
  * getAdminBackups()
- * getAdminBackupDetails($backup_id )
- * createAdminBackup($array_of_backup_data )
- * deleteAdminBackup($backup_id )
+ * getAdminBackupDetails($backup_id)
+ * createAdminBackup($array_of_backup_data)
+ * deleteAdminBackup($backup_id)
  * getAPIConfig()
  * getAPIMethods()
  */
@@ -62,7 +62,7 @@
 /**
  * All Quick-Access methods return a response like this:
  * array(
- * 	'status' => array( 'code' => '1', 'text' => 'Success', 'error' => 'Error message if any' ),
+ * 	'status' => array( 'code' => '1', 'text' => 'Success', 'error' => 'Error message if any'),
  * 	'data' => array(
  *		'field_name' => 'value'
  * 		)
@@ -73,7 +73,7 @@
  * message you're looking to display
  *
  * array(
- * 	'status' => array( 'code' => '1', 'text' => 'Success', 'error' => 'Error message if any' ),
+ * 	'status' => array( 'code' => '1', 'text' => 'Success', 'error' => 'Error message if any'),
  * 	'data' => array(
  *		[0] => array (
  *				'id' => 1,
@@ -90,13 +90,46 @@
 class Shiftplanning
 {
 	private $_key;
+
 	private $_callback;
+
 	private $_init;
-	private $_debug;
+
+	/**
+	 * @var  boolean  In debug mode
+	 */
+	private $_debug = FALSE;
+
+	/**
+	 * @var  array
+	 */
 	private $request = array();
+
+	/**
+	 * @var  array
+	 */
 	private $requests = array();
+
+	/**
+	 * @var  array
+	 */
 	private $response = array();
+
+	/**
+	 * @var  array
+	 */
 	private $raw_response = array();
+
+	/**
+	 * @var  array cached storage of internal error messages
+	 */
+	private $internal_errors = array();
+
+	/**
+	 * @var  array cached storage of response messages
+	 */
+	private $response_messages = array();
+
 
 	// constants
 	const SESSION_IDENTIFIER = 'SP';
@@ -112,39 +145,38 @@ class Shiftplanning
 	{
 		try
 		{
-			$this->_debug = FALSE;
 			$this->startSession();
 			// set the developer key
-			$this->setAppKey($config['key'] );
+			$this->setAppKey($config['key']);
 
-			if (!function_exists( 'curl_init' ))
+			if (!function_exists( 'curl_init'))
 			{
 				// curl is not available
-				throw new Exception($this->internal_errors( 6 ));
+				throw new Exception($this->internal_errors(6));
 			}
 
-			if (!function_exists( 'json_decode' ))
+			if (!function_exists( 'json_decode'))
 			{
 				// json_decode is not available
-				throw new Exception($this->internal_errors( 7 ));
+				throw new Exception($this->internal_errors(7));
 			}
 		}
-		catch( Exception $e )
+		catch( Exception $e)
 		{
 			echo $e->getMessage(); exit;
 		}
 	}
 
 	/**
-	 * turn debug on
+	 * Turn debug on
 	 * @param boolean $switch [description]
 	 */
-	public function setDebug($switch = FALSE )
+	public function setDebug($switch = FALSE)
 	{
 		// delete previous log file
 		if (file_exists('log.txt'))
 		{
-			unlink( 'log.txt' );
+			unlink( 'log.txt');
 		}
 		$this->_debug = TRUE;
 	}
@@ -152,7 +184,7 @@ class Shiftplanning
 	// start the session
 	protected function startSession()
 	{
-		session_name( self::SESSION_IDENTIFIER );
+		session_name( self::SESSION_IDENTIFIER);
 		session_start();
 	}
 
@@ -172,10 +204,10 @@ class Shiftplanning
 		));
 
 		// logout successful, remove local session data
-		if ($logout['status']['code'] == 1 )
+		if ($logout['status']['code'] == 1)
 		{
-			unset($_SESSION['token'] );
-			unset($_SESSION['data'] );
+			unset($_SESSION['token']);
+			unset($_SESSION['data']);
 			
 			# REMOVE COOKIE
 			setcookie("mobile_token", $this->response['token'][0], time()-(30*86400), "/", ".shiftplanning.com");
@@ -184,13 +216,13 @@ class Shiftplanning
 	}
 
 	/**
-	 * check whether a valid session has been established
+	 * Check whether a valid session has been established
 	 * @return [type] [description]
 	 */
 	public function getSession()
 	{
 		// user is already authenticated
-		if (isset($_SESSION['token'] ))
+		if (isset($_SESSION['token']))
 		{
 			return $_SESSION['data'];
 		}
@@ -202,17 +234,17 @@ class Shiftplanning
 	}
 
 	/**
-	 * set the method to call after successful api call
+	 * Set the method to call after successful api call
 	 * @param [type] $callback [description]
 	 */
-	private function setCallback($callback )
+	private function setCallback($callback)
 	{ 
 		$this->_callback = $callback;
 		return $this->_callback;
 	}
 
 	/**
-	 * return the raw response data
+	 * Return the raw response data
 	 * @return [type] [description]
 	 */
 	public function getRawResponse()
@@ -221,7 +253,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * return the developer key
+	 * Return the developer key
 	 * @return [type] [description]
 	 */
 	public function getAppKey()
@@ -233,7 +265,7 @@ class Shiftplanning
 	 * Set the developer key to use
 	 * @param [type] $key [description]
 	 */
-	public function setAppKey($key )
+	public function setAppKey($key)
 	{
 		$this->_key = $key;
 		return $this->_key;
@@ -255,40 +287,40 @@ class Shiftplanning
 			else
 			{
 				// user not authenticated, return an error
-				throw new Exception($this->internal_errors( 4 ));
+				throw new Exception($this->internal_errors(4));
 			}
 		}
-		catch( Exception $e )
+		catch( Exception $e)
 		{
 			echo $e->getMessage();
 		}
 	}
 
 	/**
-	 *  set the request parameters
+	 * Set the request parameters
 	 * @param array $requests [description]
 	 */
 	public function setRequest($requests = array())
 	{
 		// clear out previous request data
-		unset($this->requests );
+		unset($this->requests);
 
 		// set the default response type of JSON
 		$this->request['output'] = self::OUTPUT_TYPE;
 
 		$this->_init = 0;
 
-		foreach($requests as $r => $v )
+		foreach($requests as $r => $v)
 		{
 			// loop through each request array
-			if (is_array($v ))
+			if (is_array($v))
 			{
 				$this->requests[] = $v;
 			}
 			else
 			{
 				// automatically initialize session after this API call
-				if ($requests['module'] == 'staff.login' )
+				if ($requests['module'] == 'staff.login')
 				{
 					$this->_init = 1;
 				}
@@ -300,28 +332,28 @@ class Shiftplanning
 	}
 
 	/**
-	 * return the request parameters
+	 * Return the request parameters
 	 * @return [type] [description]
 	 */
 	public function getRequest()
 	{
-		return array_merge($this->request, array( 'request' => $this->requests ));
+		return array_merge($this->request, array( 'request' => $this->requests));
 	}
 
 	/**
-	 * set the response data
+	 * Set the response data
 	 * @param [type] $response [description]
 	 */
-	private function setResponse($response )
+	private function setResponse($response)
 	{
 		// remove previous response data
-		unset($this->response );
+		unset($this->response);
 		// set new response data
-		if (! isset($response[0]) || !is_array($response[0] ))
+		if (! isset($response[0]) || !is_array($response[0]))
 		{
 			$this->response['response'][0] = array(
 				'code' => $response['status'],
-				'text' => $this->getResponseText($response['status'] ),
+				'text' => $this->getResponseText($response['status']),
 				'error' => (isset($response['error']) ? $response['error'] : '')
 			);
 			$this->response['data'][0] = $response['data'];
@@ -330,25 +362,25 @@ class Shiftplanning
 		else
 		{
 			// loop through each response
-			foreach($response as $num => $data )
+			foreach($response as $num => $data)
 			{
 
 				$this->response['response'][$num] = array(
 					'code' => $data['status'],
-					'text' => $this->getResponseText($data['status'] ),
+					'text' => $this->getResponseText($data['status']),
 					'error' => (isset($data['error']) ? $data['error'] : '')
 				);
 				$tmp = array();
 				$id = 0;
 
 				// is there an array returned
-				if (is_array($data['data'] ))
+				if (is_array($data['data']))
 				{
-					foreach($data['data'] as $n => $v )
+					foreach($data['data'] as $n => $v)
 					{
-						if (is_array($v ))
+						if (is_array($v))
 						{
-							foreach($v as $key => $val )
+							foreach($v as $key => $val)
 							{
 								$tmp[$n][$key] = $val;
 							}
@@ -391,8 +423,16 @@ class Shiftplanning
 	 */
 	private function getResponseText(&$code)
 	{
-		// Load response messages array
-		$response_messages = include 'messages/response.php';
+		// Check internal cache or get array from file
+		if (empty($this->response_messages))
+		{
+			// Load response messages array
+			$response_messages = include 'messages/response.php';
+		}
+		else
+		{
+			$response_messages = $this->response_messages;
+		}
 
 		// select a response code to display
 		if (array_key_exists($code, $response_messages))
@@ -414,8 +454,17 @@ class Shiftplanning
 	 */
 	private function internal_errors($errno = 0)
 	{
-		// internal error messages
-		$internal_error_messages = include 'messages/internal_error.php';
+		// Check internal cache or get array from file
+		if (empty($this->internal_errors))
+		{
+			$internal_error_messages = include 'messages/internal_error.php';
+		}
+		else
+		{
+			$internal_error_messages = $this->internal_errors;
+		}
+
+		// internal error message
 		if (array_key_exists($errno, $internal_error_messages))
 		{
 			$message = $internal_error_messages[$errno];
@@ -429,22 +478,22 @@ class Shiftplanning
 	}
 
 	/**
-	 * create the api call
+	 * Create the api call
 	 * @return [type] [description]
 	 */
 	private function api()
 	{
-		if ($this->_callback == null )
+		if ($this->_callback == null)
 		{
 			// method to call after successful api request
-			$this->setCallback( 'getResponse' );
+			$this->setCallback( 'getResponse');
 		}
 
 		// session already established, use token
 		if ($this->getSession())
 		{
 			// remove the developer key from the request, since it's not necessary
-			unset($this->request['key'] );
+			unset($this->request['key']);
 			// set the token for this request, since the user is already authenticated
 			$this->request['token'] = $_SESSION['token'];
 		}
@@ -453,7 +502,7 @@ class Shiftplanning
 			// session has not been established, use developer key to access API
 			try
 			{
-				if (isset($this->_key ))
+				if (isset($this->_key))
 				{
 					// developer key is set
 					$this->request['key'] = $this->_key;
@@ -461,10 +510,10 @@ class Shiftplanning
 				else
 				{
 					// developer key is not set
-					throw new Exception($this->internal_errors( 5 ));
+					throw new Exception($this->internal_errors(5));
 				}
 			}
-			catch( Exception $e )
+			catch( Exception $e)
 			{
 				echo $e->getMessage();
 			}
@@ -474,9 +523,9 @@ class Shiftplanning
 	}
 
 	/**
-	 * Get the mime type
-	 * @param  [type] $extension [description]
-	 * @return [type]            [description]
+	 * Get the mime type by file extension
+	 * @param  [type] $extension File extension without leading dot
+	 * @return string            Mime Type
 	 */
 	private function getFileMimeType($extension)
 	{
@@ -485,16 +534,14 @@ class Shiftplanning
 			$mimes = include 'config/mimes.php';
 			if ($mimes[$extension])
 			{
-				// mime found
 				return $mimes[$extension];
 			}
 			else
-			{	
-				// mime not found
-				throw new Exception( 'Mime for .' . $extension . ' not found' );
+			{
+				throw new Exception('Mime for .' . $extension . ' not found');
 			}
 		}
-		catch( Exception $e )
+		catch( Exception $e)
 		{
 			echo $e->getMessage();
 		}
@@ -505,25 +552,25 @@ class Shiftplanning
 	 * @param  [type] $file [description]
 	 * @return [type]       [description]
 	 */
-	private function getFileData($file )
+	private function getFileData($file)
 	{
 		try
 		{
-			if (file_exists($file ))
+			if (file_exists($file))
 			{
 				// file
-				$file_data['filedata'] = file_get_contents($file );
-				$file_data['filelength'] = strlen($file_data['filedata'] );
-				if (function_exists( 'mime_content_type' ))
+				$file_data['filedata'] = file_get_contents($file);
+				$file_data['filelength'] = strlen($file_data['filedata']);
+				if (function_exists( 'mime_content_type'))
 				{
 					// mime_content_type function is available
-					$file_data['mimetype'] = mime_content_type($file );
+					$file_data['mimetype'] = mime_content_type($file);
 				}
 				else
 				{
-					$parts = explode( '.', $file );
-					$extension = strtolower($parts[ sizeOf($parts ) - 1 ] );
-					$file_data['mimetype'] = $this->getFileMimeType($extension  );
+					$parts = explode( '.', $file);
+					$extension = strtolower($parts[ sizeOf($parts) - 1 ]);
+					$file_data['mimetype'] = $this->getFileMimeType($extension);
 				}
 
 				return array(
@@ -534,40 +581,40 @@ class Shiftplanning
 			}
 			else
 			{
-				throw new Exception($this->internal_errors( 8 ));
+				throw new Exception($this->internal_errors(8));
 			}
 		}
-		catch( Exception $e )
+		catch( Exception $e)
 		{
 			echo $e->getMessage(); exit;
 		}
 	}
 
 	/**
-	 * perform the api request
+	 * Perform the api request
 	 * @return [type] [description]
 	 */
 	private function perform_request()
 	{
 		try
 		{
-			$ch = curl_init( self::API_ENDPOINT );
+			$ch = curl_init(self::API_ENDPOINT);
 
 			$filedata = '';
-			if (is_array($this->requests ))
+			if (is_array($this->requests))
 			{
-				foreach($this->requests as $key => $request )
+				foreach($this->requests as $key => $request)
 				{
 					if (isset($request['filedata']))
 					{
 						$filedata = $request['filedata'];
-						unset($this->requests[$key]['filedata'] );
+						unset($this->requests[$key]['filedata']);
 					}
 				}
 			}
 
 			$post = $filedata ? array( 'data'=> json_encode($this->getRequest()),
-				'filedata' => $filedata ) : array( 'data' => json_encode($this->getRequest()) );
+				'filedata' => $filedata) : array( 'data' => json_encode($this->getRequest()));
 
 			curl_setopt($ch, CURLOPT_URL, self::API_ENDPOINT);
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
@@ -581,31 +628,31 @@ class Shiftplanning
 			curl_close($ch);
 
 			// response from API was a successful
-			if ($http_response_code == 200 )
+			if ($http_response_code == 200)
 			{
-				$temp = json_decode($response, TRUE );
+				$temp = json_decode($response, TRUE);
 				// decode the response and store each call response in its own array
-				$this->setResponse($temp );
+				$this->setResponse($temp);
 
 				// initialize a session
-				if ($this->_init == 1 )
+				if ($this->_init == 1)
 				{
 					$this->setSession();
 				}
 
 				// raw response call
 				$this->raw_response = $temp;
-				if ($this->_debug == TRUE )
+				if ($this->_debug == TRUE)
 				{
 					// debug mode is on
 					$request = json_encode($this->getRequest());
 					$db = fopen('log.txt', 'a');
 					$tmp_vals = array();
-					if (is_array($this->response['data'][0] ))
+					if (is_array($this->response['data'][0]))
 					{
-						foreach($this->response['data'] as $n => $v )
+						foreach($this->response['data'] as $n => $v)
 						{
-							foreach($v as $key => $val )
+							foreach($v as $key => $val)
 							{
 								$tmp_vals[$n][$key] = $val;
 							}
@@ -613,7 +660,7 @@ class Shiftplanning
 					}
 					else
 					{
-						foreach($this->response['data'] as $n => $v )
+						foreach($this->response['data'] as $n => $v)
 						{
 							$tmp_vals[$n] = $v;
 						}
@@ -621,19 +668,20 @@ class Shiftplanning
 					fwrite($db, date('m-d-Y h:i a'). "\n" . 'REQUEST: ' . $request . "\n"
 						. 'RESPONSE STATUS: (' . $this->response['response'][0]['code']
 						. ') ' . $this->response['response'][0]['text'] . " -- " . $this->response['response'][0]['error'] . "\n"
-						. 'RESPONSE DATA: ' . json_encode($tmp_vals ) . "\n\n" );
-					fclose($db );
+						. 'RESPONSE DATA: ' . json_encode($tmp_vals) . "\n\n");
+					fclose($db);
 				}
+
 				// perform the callback method
 				return $this->{ $this->_callback }();
 			}
 			else
 			{
 				// response from API was unsuccessful
-				throw new Exception($this->internal_errors( 2 ));
+				throw new Exception($this->internal_errors(2));
 			}
 		}
-		catch( Exception $e )
+		catch( Exception $e)
 		{
 			echo $e->getMessage();
 		}
@@ -667,6 +715,7 @@ class Shiftplanning
 	{
 		$this->destroySession();
 	}
+
 
 	/**
 	 * Message Methods
@@ -703,7 +752,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * create a new message
+	 * Create a new message
 	 * @param  array  $message [description]
 	 * @return [type]          [description]
 	 */
@@ -721,7 +770,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * delete a message
+	 * Delete a message
 	 * @param  [type] $id [description]
 	 * @return [type]     [description]
 	 */
@@ -751,7 +800,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * create a wall message
+	 * Create a wall message
 	 * @param  array  $message [description]
 	 * @return [type]          [description]
 	 */
@@ -769,7 +818,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * delete a wall message
+	 * Delete a wall message
 	 * @param  [type] $id      [description]
 	 * @param  array  $details [description]
 	 * @return [type]          [description]
@@ -825,7 +874,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * update an employee record
+	 * Update an employee record
 	 * @param  [type] $id       [description]
 	 * @param  array  $new_data [description]
 	 * @return [type]           [description]
@@ -845,7 +894,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * create a new employee record
+	 * Create a new employee record
 	 * @param  [type] $data [description]
 	 * @return [type]       [description]
 	 */
@@ -863,7 +912,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * delete an employee
+	 * Delete an employee
 	 * @param  [type] $id [description]
 	 * @return [type]     [description]
 	 */
@@ -909,7 +958,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * create staff skill
+	 * Create staff skill
 	 * @param  array  $skill_details [description]
 	 * @return [type]                [description]
 	 */
@@ -927,7 +976,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * update staff skill
+	 * Update staff skill
 	 * @param  [type] $id            [description]
 	 * @param  array  $skill_details [description]
 	 * @return [type]                [description]
@@ -947,7 +996,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * delete staff skill
+	 * Delete staff skill
 	 * @param  [type] $id [description]
 	 * @return [type]     [description]
 	 */
@@ -963,7 +1012,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * create a ping
+	 * Create a ping
 	 * @param  array  $ping_data [description]
 	 * @return [type]            [description]
 	 */
@@ -1033,7 +1082,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * update an existing schedule
+	 * Update an existing schedule
 	 * @param  [type] $id               [description]
 	 * @param  array  $schedule_details [description]
 	 * @return [type]                   [description]
@@ -1053,7 +1102,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * delete an existing schedule
+	 * Delete an existing schedule
 	 * @param  [type] $id [description]
 	 * @return [type]     [description]
 	 */
@@ -1099,7 +1148,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * update shift details
+	 * Update shift details
 	 * @param  [type] $id            [description]
 	 * @param  array  $shift_details [description]
 	 * @return [type]                [description]
@@ -1119,7 +1168,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * create a new shift
+	 * Create a new shift
 	 * @param  array  $shift_details [description]
 	 * @return [type]                [description]
 	 */
@@ -1137,7 +1186,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * delete a shift
+	 * Delete a shift
 	 * @param  [type] $id [description]
 	 * @return [type]     [description]
 	 */
@@ -1187,7 +1236,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * create a vacation schedule
+	 * Create a vacation schedule
 	 * @param  array  $vacation_details [description]
 	 * @return [type]                   [description]
 	 */
@@ -1205,7 +1254,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * update a vacation schedule
+	 * Update a vacation schedule
 	 * @param  [type] $id               [description]
 	 * @param  array  $vacation_details [description]
 	 * @return [type]                   [description]
@@ -1225,7 +1274,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * delete a vacation schedule
+	 * Delete a vacation schedule
 	 * @param  [type] $id [description]
 	 * @return [type]     [description]
 	 */
@@ -1326,7 +1375,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * update admin file details
+	 * Update admin file details
 	 * @param  [type] $id      [description]
 	 * @param  array  $details [description]
 	 * @return [type]          [description]
@@ -1346,13 +1395,13 @@ class Shiftplanning
 	}
 
 	/**
-	 * create new admin file
+	 * Create new admin file
 	 * @param  array  $file_details [description]
 	 * @return [type]               [description]
 	 */
 	public function createAdminFile($file_details = array())
 	{ 
-		$file_details = array_merge($file_details, $this->getFileData($file_details['filename'] ));
+		$file_details = array_merge($file_details, $this->getFileData($file_details['filename']));
 		return $this->setRequest(
 			array_merge(
 				array(
@@ -1365,7 +1414,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * delete admin file
+	 * Delete admin file
 	 * @param  [type] $id [description]
 	 * @return [type]     [description]
 	 */
@@ -1411,13 +1460,13 @@ class Shiftplanning
 	}
 
 	/**
-	 * create an admin backup
+	 * Create an admin backup
 	 * @param  array  $backup_details [description]
 	 * @return [type]                 [description]
 	 */
-	public function createAdminBackup($backup_details = array()  )
+	public function createAdminBackup($backup_details = array() )
 	{ 
-		$backup_details = array_merge($backup_details, $this->getFileData($backup_details['filename'] ));
+		$backup_details = array_merge($backup_details, $this->getFileData($backup_details['filename']));
 		return $this->setRequest(
 			array_merge(
 				array(
@@ -1430,7 +1479,7 @@ class Shiftplanning
 	}
 
 	/**
-	 * delete an admin backup
+	 * Delete an admin backup
 	 * @param  [type] $id [description]
 	 * @return [type]     [description]
 	 */

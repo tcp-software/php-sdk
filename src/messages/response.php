@@ -7,7 +7,7 @@ return array(
 	'-3' => 'Flagged API Key - Pemanently Banned',
 	'-2' => 'Flagged API Key - Too Many invalid access attempts - contact us',
 	'-1' => 'Flagged API Key - Temporarily Disabled - contact us',
-	'1' => 'Success -',
+	'1' => 'Success',
 	'2' => 'Invalid API key - App must be granted a valid key by ShiftPlanning',
 	'3' => 'Invalid token key - Please re-authenticate',
 	'4' => 'Invalid Method - No Method with that name exists in our API',

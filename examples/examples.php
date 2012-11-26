@@ -22,12 +22,12 @@ $shiftplanning = new Shiftplanning(
 
 // check for a current active session
 // if a session exists, $session will now hold the user's information
-$session = $shiftplanning->getSession( );
+$session = $shiftplanning->getSession();
 
 echo "appKey: " . $shiftplanning->getAppKey( ) . "<br/>";		// returns the developer key currently set
 echo "appToken: " . $shiftplanning->getAppToken( ) . "<br/>";	// returns the token for the current session, error if not yet set
 
-if( !$session )
+if ( !$session )
 {// if a session hasn't been started, create one
 
 	// perform a single API call to authenticate a user
@@ -38,7 +38,7 @@ if( !$session )
 		)
 	);
 
-	if( $response['status']['code'] == 1 )
+	if ( $response['status']['code'] == 1 )
 	{// check to make sure that login was successful
 		$session = $shiftplanning->getSession( );	// return the session data after successful login
 		echo "Hi, " . $session['employee']['name'] . "<br/>";

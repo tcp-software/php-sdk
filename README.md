@@ -19,7 +19,7 @@ have is:
 
 	require './shiftplanning.php';
 
-	$shiftplanning = new shiftplanning(
+	$shiftplanning = new Shiftplanning(
 		array(
 			'key' => 'XXXXXXXXXXXXXXXXXX' // enter your developer key
 		)
