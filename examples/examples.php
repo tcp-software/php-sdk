@@ -1,10 +1,10 @@
 <?php
 
 // require the ShiftPlanning SDK class
-require('./shiftplanning.php');
+require('../src/shiftplanning.php');
 
 /* set the developer key on class initialization */
-$shiftplanning = new shiftplanning(
+$shiftplanning = new Shiftplanning(
 	array(
 		'key' => 'XXXXXXXXXXXXXXXXXX' // enter your developer key
 	)
@@ -57,31 +57,31 @@ else
 	/**
 	 * Quick Access ShiftPlanning SDK Methods:
 	 * doLogin( $array_of_user_data )
-	 * doLogout( )
-	 * getMessages( )
+	 * doLogout()
+	 * getMessages()
 	 * getMessageDetails( $message_id )
 	 * createMessage( $array_of_message_data )
 	 * deleteMessage( $message_id )
-	 * getWallMessages( )
+	 * getWallMessages()
 	 * createWallMessage( $array_of_message_data )
 	 * deleteWallMessage( $message_id, $array_of_other_message_data )
-	 * getEmployees( )
+	 * getEmployees()
 	 * getEmployeeDetails( $employee_id_number )
 	 * updateEmployee( $employee_id, $array_of_updated_employee_data )
 	 * createEmployee( $array_of_employee_data )
 	 * deleteEmployee( $employee_id )
-	 * getStaffSkills( )
+	 * getStaffSkills()
 	 * getStaffSkillDetails( $skill_id )
 	 * createStaffSkill( $array_of_skill_data )
 	 * updateStaffSkill( $skill_id, $array_of_skill_data )
 	 * deleteStaffSkill( $skill_id )
 	 * createPing( $array_of_ping_data )
-	 * getSchedules( )
+	 * getSchedules()
 	 * getScheduleDetails( $schedule_id )
 	 * createSchedule( $array_of_schedule_data )
 	 * updateSchedule( $schedule_id, $array_of_schedule_data )
 	 * deleteSchedule( $schedule_id )
-	 * getShifts( )
+	 * getShifts()
 	 * getShiftDetails( $shift_id )
 	 * updateShift( $shift_id, $array_of_shift_data )
 	 * createShift( $array_of_shift_data )
@@ -91,20 +91,20 @@ else
 	 * createVacationSchedule( $array_of_schedule_data )
 	 * updateVacationSchedule( $schedule_id, $array_of_schedule_data )
 	 * deleteVacationSchedule( $schedule_id )
-	 * getScheduleConflicts( )
-	 * getAdminSettings( )
+	 * getScheduleConflicts()
+	 * getAdminSettings()
 	 * updateAdminSettings( $array_of_new_settings )
-	 * getAdminFiles( )
+	 * getAdminFiles()
 	 * getAdminFileDetails( $file_id )
 	 * updateAdminFile( $file_id, $array_of_file_data )
 	 * createAdminFile( $array_of_file_data )
 	 * deleteAdminFile( $file_id )
-	 * getAdminBackups( )
+	 * getAdminBackups()
 	 * getAdminBackupDetails( $backup_id )
 	 * createAdminBackup( $array_of_backup_data )
 	 * deleteAdminBackup( $backup_id )
-	 * getAPIConfig( )
-	 * getAPIMethods( )
+	 * getAPIConfig()
+	 * getAPIMethods()
 	 */
 
 	/**
@@ -116,7 +116,7 @@ else
 	 * 		)
 	 * 	)
 	 *
-	 * For methods that return multiple objects (as in the case for the getMessages( ) method
+	 * For methods that return multiple objects (as in the case for the getMessages() method
 	 * responses will look like this, where the indexes [0], [1] would be replaced with the
 	 * message you're looking to display
 	 *
@@ -136,7 +136,7 @@ else
 	 */
 
 	// Quick-Access Methods, to perform API calls more easily
-	$employees = $shiftplanning->getEmployees( );	// returns all employees
+	$employees = $shiftplanning->getEmployees();	// returns all employees
 	$employee_1_wage = $employees['data'][0]['wage'];
 	echo "Employee 1 Wage: $" . $employee_1_wage . "<br/>";
 	echo "Employee 1 Nick Name: " . $employees['data'][0]['nick_name'] . "<br/>";
@@ -149,7 +149,7 @@ else
 		)
 	);
 
-	if( $update_employee_record_response['status']['code'] == 1 )
+	if ( $update_employee_record_response['status']['code'] == 1 )
 	{// employee update successful
 		echo "Employee record updated.<br/>";
 	}
@@ -216,16 +216,17 @@ else
 
 	}
 
-	if( $get_schedules['status']['code'] == 1 )
-	{// schedules were retrieved successfully
+	// schedules were retrieved successfully
+	if ( $get_schedules['status']['code'] == 1 )
+	{
 		print_r( $get_schedules['data'][0] );	// print data from first schedule returned
 	}
 
-	if( $get_settings['status']['code'] == 1 )
-	{// admin settings retrieved successfully
+	// admin settings retrieved successfully
+	if ( $get_settings['status']['code'] == 1 )
+	{
 		print_r( $get_settings );
 	}
 
-	//$shiftplanning->doLogout();
+	$shiftplanning->doLogout();
 }
-?>
