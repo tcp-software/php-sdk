@@ -9,31 +9,31 @@
 /**
  * Quick Access ShiftPlanning SDK Methods:
  * doLogin( $array_of_user_data )
- * doLogout( )
- * getMessages( )
+ * doLogout()
+ * getMessages()
  * getMessageDetails( $message_id )
  * createMessage( $array_of_message_data )
  * deleteMessage( $message_id )
- * getWallMessages( )
+ * getWallMessages()
  * createWallMessage( $array_of_message_data )
  * deleteWallMessage( $message_id, $array_of_other_message_data )
- * getEmployees( )
+ * getEmployees()
  * getEmployeeDetails( $employee_id_number )
  * updateEmployee( $employee_id, $array_of_updated_employee_data )
  * createEmployee( $array_of_employee_data )
  * deleteEmployee( $employee_id )
- * getStaffSkills( )
+ * getStaffSkills()
  * getStaffSkillDetails( $skill_id )
  * createStaffSkill( $array_of_skill_data )
  * updateStaffSkill( $skill_id, $array_of_skill_data )
  * deleteStaffSkill( $skill_id )
  * createPing( $array_of_ping_data )
- * getSchedules( )
+ * getSchedules()
  * getScheduleDetails( $schedule_id )
  * createSchedule( $array_of_schedule_data )
  * updateSchedule( $schedule_id, $array_of_schedule_data )
  * deleteSchedule( $schedule_id )
- * getShifts( )
+ * getShifts()
  * getShiftDetails( $shift_id )
  * updateShift( $shift_id, $array_of_shift_data )
  * createShift( $array_of_shift_data )
@@ -43,20 +43,20 @@
  * createVacationSchedule( $array_of_schedule_data )
  * updateVacationSchedule( $schedule_id, $array_of_schedule_data )
  * deleteVacationSchedule( $schedule_id )
- * getScheduleConflicts( )
- * getAdminSettings( )
+ * getScheduleConflicts()
+ * getAdminSettings()
  * updateAdminSettings( $array_of_new_settings )
- * getAdminFiles( )
+ * getAdminFiles()
  * getAdminFileDetails( $file_id )
  * updateAdminFile( $file_id, $array_of_file_data )
  * createAdminFile( $array_of_file_data )
  * deleteAdminFile( $file_id )
- * getAdminBackups( )
+ * getAdminBackups()
  * getAdminBackupDetails( $backup_id )
  * createAdminBackup( $array_of_backup_data )
  * deleteAdminBackup( $backup_id )
- * getAPIConfig( )
- * getAPIMethods( )
+ * getAPIConfig()
+ * getAPIMethods()
  */
 
 /**
@@ -68,7 +68,7 @@
  * 		)
  * 	)
  *
- * For methods that return multiple objects (as in the case for the getMessages( ) method
+ * For methods that return multiple objects (as in the case for the getMessages() method
  * responses will look like this, where the indexes [0], [1] would be replaced with the
  * message you're looking to display
  *
@@ -88,15 +88,15 @@
  */
 
 class shiftplanning
-{//
+{
 	private $_key;
 	private $_callback;
 	private $_init;
 	private $_debug;
-	private $request = array( );
-	private $requests = array( );
-	private $response = array( );
-	private $raw_response = array( );
+	private $request = array();
+	private $requests = array();
+	private $response = array();
+	private $raw_response = array();
 
 	// constants
 	const session_identifier = 'SP';
@@ -106,55 +106,55 @@ class shiftplanning
 	public function __construct( $config = array() )
 	{// construct the SDK
 		try
-		{//
+		{
 			$this->_debug = false;
-			$this->startSession( );
+			$this->startSession();
 			// set the developer key
 			$this->setAppKey( $config['key'] );
 
-			if( !function_exists( 'curl_init' ) )
+			if ( !function_exists( 'curl_init' ) )
 			{// curl is not available
 				throw new Exception( $this->internal_errors( 6 ) );
 			}
-			if( !function_exists( 'json_decode' ) )
+			if ( !function_exists( 'json_decode' ) )
 			{// json_decode is not available
 				throw new Exception( $this->internal_errors( 7 ) );
 			}
 		}
 		catch( Exception $e )
-		{//
-			echo $e->getMessage( ); exit;
+		{
+			echo $e->getMessage(); exit;
 		}
 	}
 
 	public function setDebug( $switch = false )
 	{// turn debug on
-		if( file_exists('log.txt') )
+		if ( file_exists('log.txt') )
 		{// delete previous log file
 			unlink( 'log.txt' );
 		}
 		$this->_debug = true;
 	}
 
-	protected function startSession( )
+	protected function startSession()
 	{// start the session
 		session_name( self::session_identifier );
-		session_start( );
+		session_start();
 	}
 
-	private function setSession( )
+	private function setSession()
 	{// store the user data to this session
 		$_SESSION['token'] = $this->response['token'][0];
 		$_SESSION['data'] = $this->response['data'][0];
 	}
 
-	private function destroySession( )
+	private function destroySession()
 	{// destroy the currently active session
 		$logout = $this->setRequest( array (
 			'module' => 'staff.logout',
 			'method' => 'GET'
 		) );
-		if( $logout['status']['code'] == 1 )
+		if ( $logout['status']['code'] == 1 )
 		{// logout successful, remove local session data
 			unset( $_SESSION['token'] );
 			unset( $_SESSION['data'] );
@@ -165,9 +165,9 @@ class shiftplanning
 		return $logout;
 	}
 
-	public function getSession( )
+	public function getSession()
 	{// check whether a valid session has been established
-		if( isset( $_SESSION['token'] ) )
+		if ( isset( $_SESSION['token'] ) )
 		{// user is already authenticated
 			return $_SESSION['data'];
 		}
@@ -183,12 +183,12 @@ class shiftplanning
 		return $this->_callback;
 	}
 
-	public function getRawResponse( )
+	public function getRawResponse()
 	{// return the raw response data
 		return $this->raw_response;
 	}
 
-	public function getAppKey( )
+	public function getAppKey()
 	{// return the developer key
 		return $this->_key;
 	}
@@ -199,12 +199,17 @@ class shiftplanning
 		return $this->_key;
 	}
 
-	public function getAppToken( )
-	{// return the token that's currently being used
+	/**
+	 * Get the token that's currently being used
+	 * @return [type] [description]
+	 */
+	public function getAppToken()
+	{
 		try
-		{//
-			if( $this->getSession( ) )
-			{// user authenticated, return the token
+		{
+			// user authenticated, return the token
+			if ( $this->getSession() )
+			{
 				return $_SESSION['token'];
 			}
 			else
@@ -213,12 +218,12 @@ class shiftplanning
 			}
 		}
 		catch( Exception $e )
-		{//
+		{
 			echo $e->getMessage();
 		}
 	}
 
-	public function setRequest( $requests = array( ) )
+	public function setRequest( $requests = array() )
 	{// set the request parameters
 		// clear out previous request data
 		unset( $this->requests );
@@ -230,13 +235,13 @@ class shiftplanning
 
 		foreach( $requests as $r => $v )
 		{// loop through each request array
-			if( is_array( $v ) )
-			{//
+			if ( is_array( $v ) )
+			{
 				$this->requests[] = $v;
 			}
 			else
-			{//
-				if( $requests['module'] == 'staff.login' )
+			{
+				if ( $requests['module'] == 'staff.login' )
 				{// automatically initialize session after this API call
 					$this->_init = 1;
 				}
@@ -244,10 +249,10 @@ class shiftplanning
 			}
 		}
 
-		return $this->api( );
+		return $this->api();
 	}
 
-	public function getRequest( )
+	public function getRequest()
 	{// return the request parameters
 		return array_merge( $this->request, array( 'request' => $this->requests ) );
 	}
@@ -257,40 +262,40 @@ class shiftplanning
 		// remove previous response data
 		unset( $this->response );
 		// set new response data
-		if( !is_array( $response[0] ) )
-		{//
+		if ( ! isset($response[0]) || !is_array( $response[0] ) )
+		{
 			$this->response['response'][0] = array(
 				'code' => $response['status'],
-				'text' => $this->getResponseText( &$response['status'] ),
-				'error' => $response['error']
+				'text' => $this->getResponseText( $response['status'] ),
+				'error' => (isset($response['error']) ? $response['error'] : '')
 			);
 			$this->response['data'][0] = $response['data'];
 			$this->response['token'][0] = $response['token'];
 		}
 		else
-		{//
+		{
 			foreach( $response as $num => $data )
 			{// loop through each response
 				$this->response['response'][$num] = array(
 					'code' => $data['status'],
-					'text' => $this->getResponseText( &$data['status'] ),
-					'error' => $data['error']
+					'text' => $this->getResponseText( $data['status'] ),
+					'error' => (isset($data['error']) ? $data['error'] : '')
 				);
-				$tmp = array( );
+				$tmp = array();
 				$id = 0;
-				if( is_array( $data['data'] ) )
+				if ( is_array( $data['data'] ) )
 				{// is there an array returned
 					foreach( $data['data'] as $n => $v )
-					{//
-						if( is_array( $v ) )
-						{//
+					{
+						if ( is_array( $v ) )
+						{
 							foreach( $v as $key => $val )
-							{//
+							{
 								$tmp[$n][$key] = $val;
 							}
 						}
 						else
-						{//
+						{
 							$tmp[$n] = $v;
 						}
 					}
@@ -305,19 +310,30 @@ class shiftplanning
 		}
 	}
 
+	/**
+	 * Get the API response data to the calling method
+	 * @param  integer $call_num Calling method number
+	 * @return array             API Response Data
+	 */
 	public function getResponse( $call_num = 0 )
-	{// return the API response data to the calling method
+	{
 		return array(
 			'status' => $this->response['response'][$call_num],
 			'data' => $this->response['data'][$call_num],
-			'error' => $this->response['error'][$call_num]
+			'error' => (isset($this->response['error'])) ? $this->response['error'][$call_num]: NULL,
 		);
 	}
 
+	/**
+	 * Get a reason text for a response code
+	 * @param  int $code [description]
+	 * @return string     Response
+	 */
 	private function getResponseText( &$code )
-	{// return a reason text for a response code
+	{
+		// select a response code to display
 		switch( $code )
-		{// select a response code to display
+		{
 			case '-3' : $reason = 'Flagged API Key - Pemanently Banned'; break;
 			case '-2' : $reason = 'Flagged API Key - Too Many invalid access attempts - contact us'; break;
 			case '-1' : $reason = 'Flagged API Key - Temporarily Disabled - contact us'; break;
@@ -383,13 +399,13 @@ class shiftplanning
 		return $message; exit;
 	}
 
-	private function api( )
+	private function api()
 	{// create the api call
-		if( $this->_callback == null )
+		if ( $this->_callback == null )
 		{// method to call after successful api request
 			$this->setCallback( 'getResponse' );
 		}
-		if( $this->getSession( ) )
+		if ( $this->getSession() )
 		{// session already established, use token
 			// remove the developer key from the request, since it's not necessary
 			unset( $this->request['key'] );
@@ -399,8 +415,8 @@ class shiftplanning
 		else
 		{// session has not been established, use developer key to access API
 			try
-			{//
-				if( isset( $this->_key ) )
+			{
+				if ( isset( $this->_key ) )
 				{// developer key is set
 					$this->request['key'] = $this->_key;
 				}
@@ -410,16 +426,16 @@ class shiftplanning
 				}
 			}
 			catch( Exception $e )
-			{//
-				echo $e->getMessage( );
+			{
+				echo $e->getMessage();
 			}
 		}
 		// make the api request
-		return $this->perform_request( );
+		return $this->perform_request();
 	}
 
 	private function getFileMimeType( $extension )
-	{//
+	{
 		$mimes = array(
 			"ez" => "application/andrew-inset",
 			"hqx" => "application/mac-binhex40",
@@ -558,8 +574,8 @@ class shiftplanning
 			"ice" => "x-conference-xcooltalk"
 		);
 		try
-		{//
-			if( $mimes[ $extension ] )
+		{
+			if ( $mimes[ $extension ] )
 			{// mime found
 				return $mimes[ $extension ];
 			}
@@ -569,25 +585,25 @@ class shiftplanning
 			}
 		}
 		catch( Exception $e )
-		{//
-			echo $e->getMessage( );
+		{
+			echo $e->getMessage();
 		}
 	}
 
 	private function getFileData( $file )
 	{// get file details, (data, length, mimetype)
 		try
-		{//
-			if( file_exists( $file ) )
+		{
+			if ( file_exists( $file ) )
 			{// file
 				$file_data['filedata'] = file_get_contents( $file );
 				$file_data['filelength'] = strlen( $file_data['filedata'] );
-				if( function_exists( 'mime_content_type' ) )
+				if ( function_exists( 'mime_content_type' ) )
 				{// mime_content_type function is available
 					$file_data['mimetype'] = mime_content_type( $file );
 				}
 				else
-				{//
+				{
 					$parts = explode( '.', $file );
 					$extension = strtolower( $parts[ sizeOf( $parts ) - 1 ] );
 					$file_data['mimetype'] = $this->getFileMimeType( $extension  );
@@ -600,37 +616,37 @@ class shiftplanning
 				);
 			}
 			else
-			{//
+			{
 				throw new Exception( $this->internal_errors( 8 ) );
 			}
 		}
 		catch( Exception $e )
-		{//
-			echo $e->getMessage( ); exit;
+		{
+			echo $e->getMessage(); exit;
 		}
 	}
 
-	private function perform_request( )
+	private function perform_request()
 	{// perform the api request
 		try
-		{//
+		{
 			$ch = curl_init( self::api_endpoint );
 
 			$filedata = '';
-			if( is_array( $this->requests ) )
-			{//
+			if ( is_array( $this->requests ) )
+			{
 				foreach( $this->requests as $key => $request )
-				{//
-					if( $request['filedata'] )
-					{//
+				{
+					if ( isset($request['filedata']) )
+					{
 						$filedata = $request['filedata'];
 						unset( $this->requests[$key]['filedata'] );
 					}
 				}
 			}
 
-			$post = $filedata ? array( 'data'=> json_encode( $this->getRequest( ) ),
-				'filedata' => $filedata ) : array( 'data' => json_encode( $this->getRequest( ) ) );
+			$post = $filedata ? array( 'data'=> json_encode( $this->getRequest() ),
+				'filedata' => $filedata ) : array( 'data' => json_encode( $this->getRequest() ) );
 
 			curl_setopt( $ch, CURLOPT_URL, self::api_endpoint );
 			curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 0 );
@@ -643,36 +659,36 @@ class shiftplanning
 			$http_response_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
 			curl_close( $ch );
 
-			if( $http_response_code == 200 )
+			if ( $http_response_code == 200 )
 			{// response from API was a successful
 				$temp = json_decode( $response, true );
 				// decode the response and store each call response in its own array
 				$this->setResponse( $temp );
-				if( $this->_init == 1 )
+				if ( $this->_init == 1 )
 				{// initialize a session
-					$this->setSession( );
+					$this->setSession();
 				}
 				// raw response call
 				$this->raw_response = $temp;
-				if( $this->_debug == true )
+				if ( $this->_debug == true )
 				{// debug mode is on
-					$request = json_encode( $this->getRequest( ) );
+					$request = json_encode( $this->getRequest() );
 					$db = fopen('log.txt', 'a');
-					$tmp_vals = array( );
-					if( is_array( $this->response['data'][0] ) )
-					{//
+					$tmp_vals = array();
+					if ( is_array( $this->response['data'][0] ) )
+					{
 						foreach( $this->response['data'] as $n => $v )
-						{//
+						{
 							foreach( $v as $key => $val )
-							{//
+							{
 								$tmp_vals[$n][$key] = $val;
 							}
 						}
 					}
 					else
-					{//
+					{
 						foreach( $this->response['data'] as $n => $v )
-						{//
+						{
 							$tmp_vals[$n] = $v;
 						}
 					}
@@ -683,7 +699,7 @@ class shiftplanning
 					fclose( $db );
 				}
 				// perform the callback method
-				return $this->{ $this->_callback }( );
+				return $this->{ $this->_callback }();
 			}
 			else
 			{// response from API was unsuccessful
@@ -691,7 +707,7 @@ class shiftplanning
 			}
 		}
 		catch( Exception $e )
-		{//
+		{
 			echo $e->getMessage();
 		}
 	}
@@ -700,7 +716,7 @@ class shiftplanning
 	 * User Authentication Methods
 	 *
 	 */
-	public function doLogin( $user = array( ) )
+	public function doLogin( $user = array() )
 	{// perform a login api call
 		return $this->setRequest(
 			array(
@@ -712,16 +728,16 @@ class shiftplanning
 		);
 	}
 
-	public function doLogout( )
+	public function doLogout()
 	{// erase token and user data from current session
-		$this->destroySession( );
+		$this->destroySession();
 	}
 
 	/*
 	 * Message Methods
 	 *
 	 */
-	public function getMessages( )
+	public function getMessages()
 	{// get messages for the currently logged in user
 		return $this->setRequest(
 			array(
@@ -742,7 +758,7 @@ class shiftplanning
 		);
 	}
 
-	public function createMessage( $message = array( ) )
+	public function createMessage( $message = array() )
 	{// create a new message
 		return $this->setRequest(
 			array_merge(
@@ -766,7 +782,7 @@ class shiftplanning
 		);
 	}
 
-	public function getWallMessages( )
+	public function getWallMessages()
 	{// get message wall
 		return $this->setRequest(
 			array(
@@ -776,7 +792,7 @@ class shiftplanning
 		);
 	}
 
-	public function createWallMessage( $message = array( ) )
+	public function createWallMessage( $message = array() )
 	{// create a wall message
 		return $this->setRequest(
 			array_merge(
@@ -789,7 +805,7 @@ class shiftplanning
 		);
 	}
 
-	public function deleteWallMessage( $id, $details = array( ) )
+	public function deleteWallMessage( $id, $details = array() )
 	{// delete a wall message
 		return $this->setRequest(
 			array_merge(
@@ -807,7 +823,7 @@ class shiftplanning
 	 * Staff Methods
 	 *
 	 */
-	public function getEmployees( )
+	public function getEmployees()
 	{// get a list of employees
 		return $this->setRequest(
 			array(
@@ -828,7 +844,7 @@ class shiftplanning
 		);
 	}
 
-	public function updateEmployee( $id, $new_data = array( ) )
+	public function updateEmployee( $id, $new_data = array() )
 	{// update an employee record
 		return $this->setRequest(
 			array_merge(
@@ -866,7 +882,7 @@ class shiftplanning
 		);
 	}
 
-	public function getStaffSkills( )
+	public function getStaffSkills()
 	{// get staff skills
 		return $this->setRequest(
 			array(
@@ -887,7 +903,7 @@ class shiftplanning
 		);
 	}
 
-	public function createStaffSkill( $skill_details = array( ) )
+	public function createStaffSkill( $skill_details = array() )
 	{// create staff skill
 		return $this->setRequest(
 			array_merge(
@@ -900,7 +916,7 @@ class shiftplanning
 		);
 	}
 
-	public function updateStaffSkill( $id, $skill_details = array( ) )
+	public function updateStaffSkill( $id, $skill_details = array() )
 	{// update staff skill
 		return $this->setRequest(
 			array_merge(
@@ -925,7 +941,7 @@ class shiftplanning
 		);
 	}
 
-	public function createPing( $ping_data = array( ) )
+	public function createPing( $ping_data = array() )
 	{// create a ping
 		return $this->setRequest(
 			array_merge(
@@ -942,7 +958,7 @@ class shiftplanning
 	 * Schedule Methods
 	 *
 	 */
-	public function getSchedules( )
+	public function getSchedules()
 	{// get schedules
 		return $this->setRequest(
 			array(
@@ -963,7 +979,7 @@ class shiftplanning
 		);
 	}
 
-	public function createSchedule( $schedule_details = array( ) )
+	public function createSchedule( $schedule_details = array() )
 	{// create a new schedule
 		return $this->setRequest(
 			array_merge(
@@ -976,7 +992,7 @@ class shiftplanning
 		);
 	}
 
-	public function updateSchedule( $id, $schedule_details = array( ) )
+	public function updateSchedule( $id, $schedule_details = array() )
 	{// update an existing schedule
 		return $this->setRequest(
 			array_merge(
@@ -1001,7 +1017,7 @@ class shiftplanning
 		);
 	}
 
-	public function getShifts( )
+	public function getShifts()
 	{// get shifts
 		return $this->setRequest(
 			array(
@@ -1022,7 +1038,7 @@ class shiftplanning
 		);
 	}
 
-	public function updateShift( $id, $shift_details = array( ) )
+	public function updateShift( $id, $shift_details = array() )
 	{// update shift details
 		return $this->setRequest(
 			array_merge(
@@ -1036,7 +1052,7 @@ class shiftplanning
 		);
 	}
 
-	public function createShift( $shift_details = array( ) )
+	public function createShift( $shift_details = array() )
 	{// create a new shift
 		return $this->setRequest(
 			array_merge(
@@ -1060,7 +1076,7 @@ class shiftplanning
 		);
 	}
 
-	public function getVacationSchedules( $time_period = array( ) )
+	public function getVacationSchedules( $time_period = array() )
 	{// get schedule vacations, pass start and end params to get vacations within a certian time-period
 		return $this->setRequest(
 			array_merge(
@@ -1084,7 +1100,7 @@ class shiftplanning
 		);
 	}
 
-	public function createVacationSchedule( $vacation_details = array( ) )
+	public function createVacationSchedule( $vacation_details = array() )
 	{// create a vacation schedule
 		return $this->setRequest(
 			array_merge(
@@ -1097,7 +1113,7 @@ class shiftplanning
 		);
 	}
 
-	public function updateVacationSchedule( $id, $vacation_details = array( ) )
+	public function updateVacationSchedule( $id, $vacation_details = array() )
 	{// update a vacation schedule
 		return $this->setRequest(
 			array_merge(
@@ -1122,7 +1138,7 @@ class shiftplanning
 		);
 	}
 
-	public function getScheduleConflicts( $time_period = array( ) )
+	public function getScheduleConflicts( $time_period = array() )
 	{// get schedule conflicts
 		return $this->setRequest(
 			array_merge(
@@ -1139,7 +1155,7 @@ class shiftplanning
 	 * Administration Methods
 	 *
 	 */
-	public function getAdminSettings( )
+	public function getAdminSettings()
 	{// get admin settings
 		return $this->setRequest(
 			array(
@@ -1149,7 +1165,7 @@ class shiftplanning
 		);
 	}
 
-	public function updateAdminSettings( $settings = array( ) )
+	public function updateAdminSettings( $settings = array() )
 	{// update admin settings
 		return $this->setRequest(
 			array_merge(
@@ -1162,7 +1178,7 @@ class shiftplanning
 		);
 	}
 
-	public function getAdminFiles( )
+	public function getAdminFiles()
 	{// get administrator file listing
 		return $this->setRequest(
 			array(
@@ -1183,7 +1199,7 @@ class shiftplanning
 		);
 	}
 
-	public function updateAdminFile( $id, $details = array( ) )
+	public function updateAdminFile( $id, $details = array() )
 	{// update admin file details
 		return $this->setRequest(
 			array_merge(
@@ -1197,7 +1213,7 @@ class shiftplanning
 		);
 	}
 
-	public function createAdminFile( $file_details = array( ) )
+	public function createAdminFile( $file_details = array() )
 	{// create new admin file
 		$file_details = array_merge( $file_details, $this->getFileData( $file_details['filename'] ) );
 		return $this->setRequest(
@@ -1222,7 +1238,7 @@ class shiftplanning
 		);
 	}
 
-	public function getAdminBackups( )
+	public function getAdminBackups()
 	{// get admin backups
 		return $this->setRequest(
 			array(
@@ -1243,7 +1259,7 @@ class shiftplanning
 		);
 	}
 
-	public function createAdminBackup( $backup_details = array( )  )
+	public function createAdminBackup( $backup_details = array()  )
 	{// create an admin backup
 		$backup_details = array_merge( $backup_details, $this->getFileData( $backup_details['filename'] ) );
 		return $this->setRequest(
@@ -1272,7 +1288,7 @@ class shiftplanning
 	 * API Methods
 	 *
 	 */
-	public function getAPIConfig( )
+	public function getAPIConfig()
 	{// get api config
 		return $this->setRequest(
 			array(
@@ -1282,7 +1298,7 @@ class shiftplanning
 		);
 	}
 
-	public function getAPIMethods( )
+	public function getAPIMethods()
 	{// get all available api methods
 		return $this->setRequest(
 			array(
@@ -1292,4 +1308,3 @@ class shiftplanning
 		);
 	}
 }
-?>
