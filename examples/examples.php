@@ -11,7 +11,7 @@ $shiftplanning = new Shiftplanning(
 );
 
 // or set the developer key using the setAppKey method
-//$shiftplanning->setAppKey( 'XXXXXXXXXXXXXXXXXX' );
+//$shiftplanning->setAppKey('XXXXXXXXXXXXXXXXXX');
 
 /**
  *
@@ -27,8 +27,9 @@ $session = $shiftplanning->getSession();
 echo "appKey: " . $shiftplanning->getAppKey( ) . "<br/>";		// returns the developer key currently set
 echo "appToken: " . $shiftplanning->getAppToken( ) . "<br/>";	// returns the token for the current session, error if not yet set
 
-if ( !$session )
-{// if a session hasn't been started, create one
+if (!$session)
+{
+	// if a session hasn't been started, create one
 
 	// perform a single API call to authenticate a user
 	$response = $shiftplanning->doLogin(
@@ -38,7 +39,7 @@ if ( !$session )
 		)
 	);
 
-	if ( $response['status']['code'] == 1 )
+	if ($response['status']['code'] == 1)
 	{// check to make sure that login was successful
 		$session = $shiftplanning->getSession( );	// return the session data after successful login
 		echo "Hi, " . $session['employee']['name'] . "<br/>";
@@ -49,60 +50,61 @@ if ( !$session )
 	}
 }
 else
-{// session has been established
+{
+	// session has been established
 
 	// the $session variable now holds the currently logged in user's data
 	echo "Hi, " . $session['employee']['name'] . "<br/>";
 
 	/**
 	 * Quick Access ShiftPlanning SDK Methods:
-	 * doLogin( $array_of_user_data )
+	 * doLogin($array_of_user_data)
 	 * doLogout()
 	 * getMessages()
-	 * getMessageDetails( $message_id )
-	 * createMessage( $array_of_message_data )
-	 * deleteMessage( $message_id )
+	 * getMessageDetails($message_id)
+	 * createMessage($array_of_message_data)
+	 * deleteMessage($message_id)
 	 * getWallMessages()
-	 * createWallMessage( $array_of_message_data )
-	 * deleteWallMessage( $message_id, $array_of_other_message_data )
+	 * createWallMessage($array_of_message_data)
+	 * deleteWallMessage($message_id, $array_of_other_message_data)
 	 * getEmployees()
-	 * getEmployeeDetails( $employee_id_number )
-	 * updateEmployee( $employee_id, $array_of_updated_employee_data )
-	 * createEmployee( $array_of_employee_data )
-	 * deleteEmployee( $employee_id )
+	 * getEmployeeDetails($employee_id_number)
+	 * updateEmployee($employee_id, $array_of_updated_employee_data)
+	 * createEmployee($array_of_employee_data)
+	 * deleteEmployee($employee_id)
 	 * getStaffSkills()
-	 * getStaffSkillDetails( $skill_id )
-	 * createStaffSkill( $array_of_skill_data )
-	 * updateStaffSkill( $skill_id, $array_of_skill_data )
-	 * deleteStaffSkill( $skill_id )
-	 * createPing( $array_of_ping_data )
+	 * getStaffSkillDetails($skill_id)
+	 * createStaffSkill($array_of_skill_data)
+	 * updateStaffSkill($skill_id, $array_of_skill_data)
+	 * deleteStaffSkill($skill_id)
+	 * createPing($array_of_ping_data)
 	 * getSchedules()
-	 * getScheduleDetails( $schedule_id )
-	 * createSchedule( $array_of_schedule_data )
-	 * updateSchedule( $schedule_id, $array_of_schedule_data )
-	 * deleteSchedule( $schedule_id )
+	 * getScheduleDetails($schedule_id)
+	 * createSchedule($array_of_schedule_data)
+	 * updateSchedule($schedule_id, $array_of_schedule_data)
+	 * deleteSchedule($schedule_id)
 	 * getShifts()
-	 * getShiftDetails( $shift_id )
-	 * updateShift( $shift_id, $array_of_shift_data )
-	 * createShift( $array_of_shift_data )
-	 * deleteShift( $shift_id )
-	 * getVacationSchedules( $time_period_array )	// e.g. getVacationSchedules( array( 'start' => '', 'end' => '' ) );
-	 * getVacationScheduleDetails( $schedule_id )
-	 * createVacationSchedule( $array_of_schedule_data )
-	 * updateVacationSchedule( $schedule_id, $array_of_schedule_data )
-	 * deleteVacationSchedule( $schedule_id )
+	 * getShiftDetails($shift_id)
+	 * updateShift($shift_id, $array_of_shift_data)
+	 * createShift($array_of_shift_data)
+	 * deleteShift($shift_id)
+	 * getVacationSchedules($time_period_array)	// e.g. getVacationSchedules(array('start' => '', 'end' => ''));
+	 * getVacationScheduleDetails($schedule_id)
+	 * createVacationSchedule($array_of_schedule_data)
+	 * updateVacationSchedule($schedule_id, $array_of_schedule_data)
+	 * deleteVacationSchedule($schedule_id)
 	 * getScheduleConflicts()
 	 * getAdminSettings()
-	 * updateAdminSettings( $array_of_new_settings )
+	 * updateAdminSettings($array_of_new_settings)
 	 * getAdminFiles()
-	 * getAdminFileDetails( $file_id )
-	 * updateAdminFile( $file_id, $array_of_file_data )
-	 * createAdminFile( $array_of_file_data )
-	 * deleteAdminFile( $file_id )
+	 * getAdminFileDetails($file_id)
+	 * updateAdminFile($file_id, $array_of_file_data)
+	 * createAdminFile($array_of_file_data)
+	 * deleteAdminFile($file_id)
 	 * getAdminBackups()
-	 * getAdminBackupDetails( $backup_id )
-	 * createAdminBackup( $array_of_backup_data )
-	 * deleteAdminBackup( $backup_id )
+	 * getAdminBackupDetails($backup_id)
+	 * createAdminBackup($array_of_backup_data)
+	 * deleteAdminBackup($backup_id)
 	 * getAPIConfig()
 	 * getAPIMethods()
 	 */
@@ -110,7 +112,7 @@ else
 	/**
 	 * All Quick-Access methods return a response like this:
 	 * array(
-	 * 	'status' => array( 'code' => '1', 'text' => 'Success', 'error' => 'Error message if any' ),
+	 * 	'status' => array('code' => '1', 'text' => 'Success', 'error' => 'Error message if any'),
 	 * 	'data' => array(
 	 *		'field_name' => 'value'
 	 * 		)
@@ -121,7 +123,7 @@ else
 	 * message you're looking to display
 	 *
 	 * array(
-	 * 	'status' => array( 'code' => '1', 'text' => 'Success', 'error' => 'Error message if any' ),
+	 * 	'status' => array('code' => '1', 'text' => 'Success', 'error' => 'Error message if any'),
 	 * 	'data' => array(
 	 *		[0] => array (
 	 *				'id' => 1,
@@ -149,7 +151,7 @@ else
 		)
 	);
 
-	if ( $update_employee_record_response['status']['code'] == 1 )
+	if ($update_employee_record_response['status']['code'] == 1)
 	{// employee update successful
 		echo "Employee record updated.<br/>";
 	}
@@ -217,15 +219,15 @@ else
 	}
 
 	// schedules were retrieved successfully
-	if ( $get_schedules['status']['code'] == 1 )
+	if ($get_schedules['status']['code'] == 1)
 	{
-		print_r( $get_schedules['data'][0] );	// print data from first schedule returned
+		print_r($get_schedules['data'][0]);	// print data from first schedule returned
 	}
 
 	// admin settings retrieved successfully
-	if ( $get_settings['status']['code'] == 1 )
+	if ($get_settings['status']['code'] == 1)
 	{
-		print_r( $get_settings );
+		print_r($get_settings);
 	}
 
 	$shiftplanning->doLogout();

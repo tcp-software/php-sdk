@@ -38,7 +38,7 @@
  * updateShift($shift_id, $array_of_shift_data)
  * createShift($array_of_shift_data)
  * deleteShift($shift_id)
- * getVacationSchedules($time_period_array)	// e.g. getVacationSchedules( array( 'start' => '', 'end' => ''));
+ * getVacationSchedules($time_period_array)	// e.g. getVacationSchedules(array('start' => '', 'end' => ''));
  * getVacationScheduleDetails($schedule_id)
  * createVacationSchedule($array_of_schedule_data)
  * updateVacationSchedule($schedule_id, $array_of_schedule_data)
@@ -62,7 +62,7 @@
 /**
  * All Quick-Access methods return a response like this:
  * array(
- * 	'status' => array( 'code' => '1', 'text' => 'Success', 'error' => 'Error message if any'),
+ * 	'status' => array('code' => '1', 'text' => 'Success', 'error' => 'Error message if any'),
  * 	'data' => array(
  *		'field_name' => 'value'
  * 		)
@@ -73,7 +73,7 @@
  * message you're looking to display
  *
  * array(
- * 	'status' => array( 'code' => '1', 'text' => 'Success', 'error' => 'Error message if any'),
+ * 	'status' => array('code' => '1', 'text' => 'Success', 'error' => 'Error message if any'),
  * 	'data' => array(
  *		[0] => array (
  *				'id' => 1,
@@ -89,10 +89,20 @@
 
 class Shiftplanning
 {
+
+	/**
+	 * @var  string AppKey
+	 */
 	private $_key;
 
+	/**
+	 * @var  string Callback Method
+	 */
 	private $_callback;
 
+	/**
+	 * @var  integer  session initalization
+	 */
 	private $_init;
 
 	/**
@@ -149,19 +159,19 @@ class Shiftplanning
 			// set the developer key
 			$this->setAppKey($config['key']);
 
-			if (!function_exists( 'curl_init'))
+			if (!function_exists('curl_init'))
 			{
 				// curl is not available
 				throw new Exception($this->internal_errors(6));
 			}
 
-			if (!function_exists( 'json_decode'))
+			if (!function_exists('json_decode'))
 			{
 				// json_decode is not available
 				throw new Exception($this->internal_errors(7));
 			}
 		}
-		catch( Exception $e)
+		catch(Exception $e)
 		{
 			echo $e->getMessage(); exit;
 		}
@@ -176,7 +186,7 @@ class Shiftplanning
 		// delete previous log file
 		if (file_exists('log.txt'))
 		{
-			unlink( 'log.txt');
+			unlink('log.txt');
 		}
 		$this->_debug = TRUE;
 	}
@@ -184,7 +194,7 @@ class Shiftplanning
 	// start the session
 	protected function startSession()
 	{
-		session_name( self::SESSION_IDENTIFIER);
+		session_name(self::SESSION_IDENTIFIER);
 		session_start();
 	}
 
@@ -198,7 +208,7 @@ class Shiftplanning
 	// destroy the currently active session
 	private function destroySession()
 	{
-		$logout = $this->setRequest( array (
+		$logout = $this->setRequest(array(
 			'module' => 'staff.logout',
 			'method' => 'GET'
 		));
@@ -290,7 +300,7 @@ class Shiftplanning
 				throw new Exception($this->internal_errors(4));
 			}
 		}
-		catch( Exception $e)
+		catch(Exception $e)
 		{
 			echo $e->getMessage();
 		}
@@ -337,7 +347,7 @@ class Shiftplanning
 	 */
 	public function getRequest()
 	{
-		return array_merge($this->request, array( 'request' => $this->requests));
+		return array_merge($this->request, array('request' => $this->requests));
 	}
 
 	/**
@@ -486,7 +496,7 @@ class Shiftplanning
 		if ($this->_callback == null)
 		{
 			// method to call after successful api request
-			$this->setCallback( 'getResponse');
+			$this->setCallback('getResponse');
 		}
 
 		// session already established, use token
@@ -513,7 +523,7 @@ class Shiftplanning
 					throw new Exception($this->internal_errors(5));
 				}
 			}
-			catch( Exception $e)
+			catch(Exception $e)
 			{
 				echo $e->getMessage();
 			}
@@ -541,7 +551,7 @@ class Shiftplanning
 				throw new Exception('Mime for .' . $extension . ' not found');
 			}
 		}
-		catch( Exception $e)
+		catch(Exception $e)
 		{
 			echo $e->getMessage();
 		}
@@ -561,14 +571,14 @@ class Shiftplanning
 				// file
 				$file_data['filedata'] = file_get_contents($file);
 				$file_data['filelength'] = strlen($file_data['filedata']);
-				if (function_exists( 'mime_content_type'))
+				if (function_exists('mime_content_type'))
 				{
 					// mime_content_type function is available
 					$file_data['mimetype'] = mime_content_type($file);
 				}
 				else
 				{
-					$parts = explode( '.', $file);
+					$parts = explode('.', $file);
 					$extension = strtolower($parts[ sizeOf($parts) - 1 ]);
 					$file_data['mimetype'] = $this->getFileMimeType($extension);
 				}
@@ -584,7 +594,7 @@ class Shiftplanning
 				throw new Exception($this->internal_errors(8));
 			}
 		}
-		catch( Exception $e)
+		catch(Exception $e)
 		{
 			echo $e->getMessage(); exit;
 		}
@@ -613,8 +623,8 @@ class Shiftplanning
 				}
 			}
 
-			$post = $filedata ? array( 'data'=> json_encode($this->getRequest()),
-				'filedata' => $filedata) : array( 'data' => json_encode($this->getRequest()));
+			$post = $filedata ? array('data'=> json_encode($this->getRequest()),
+				'filedata' => $filedata) : array('data' => json_encode($this->getRequest()));
 
 			curl_setopt($ch, CURLOPT_URL, self::API_ENDPOINT);
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
@@ -681,7 +691,7 @@ class Shiftplanning
 				throw new Exception($this->internal_errors(2));
 			}
 		}
-		catch( Exception $e)
+		catch(Exception $e)
 		{
 			echo $e->getMessage();
 		}
@@ -1307,9 +1317,8 @@ class Shiftplanning
 		);
 	}
 
-	/*
+	/**
 	 * Administration Methods
-	 *
 	 */
 	
 	/**
@@ -1464,7 +1473,7 @@ class Shiftplanning
 	 * @param  array  $backup_details [description]
 	 * @return [type]                 [description]
 	 */
-	public function createAdminBackup($backup_details = array() )
+	public function createAdminBackup($backup_details = array())
 	{ 
 		$backup_details = array_merge($backup_details, $this->getFileData($backup_details['filename']));
 		return $this->setRequest(
@@ -1494,9 +1503,8 @@ class Shiftplanning
 		);
 	}
 
-	/*
+	/**
 	 * API Methods
-	 *
 	 */
 	
 	/**
