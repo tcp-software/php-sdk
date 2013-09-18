@@ -257,12 +257,12 @@ class shiftplanning
 		// remove previous response data
 		unset( $this->response );
 		// set new response data
-		if( !is_array( $response[0] ) )
+		if( isset($response['data']) )
 		{//
 			$this->response['response'][0] = array(
 				'code' => $response['status'],
-				'text' => $this->getResponseText( &$response['status'] ),
-				'error' => $response['error']
+				'text' => $this->getResponseText( $response['status'] ),
+				'error' => (isset($response['error']))?$response['error']:''
 			);
 			$this->response['data'][0] = $response['data'];
 			$this->response['token'][0] = $response['token'];
@@ -271,35 +271,37 @@ class shiftplanning
 		{//
 			foreach( $response as $num => $data )
 			{// loop through each response
-				$this->response['response'][$num] = array(
-					'code' => $data['status'],
-					'text' => $this->getResponseText( &$data['status'] ),
-					'error' => $data['error']
-				);
-				$tmp = array( );
-				$id = 0;
-				if( is_array( $data['data'] ) )
-				{// is there an array returned
-					foreach( $data['data'] as $n => $v )
-					{//
-						if( is_array( $v ) )
+				if( isset($data['status']) ){
+					$this->response['response'][$num] = array(
+						'code' => $data['status'],
+						'text' => $this->getResponseText( $data['status'] ),
+						'error' => (isset($data['error']))?$data['error']:''
+					);
+					$tmp = array( );
+					$id = 0;
+					if( is_array( $data['data'] ) )
+					{// is there an array returned
+						foreach( $data['data'] as $n => $v )
 						{//
-							foreach( $v as $key => $val )
+							if( is_array( $v ) )
 							{//
-								$tmp[$n][$key] = $val;
+								foreach( $v as $key => $val )
+								{//
+									$tmp[$n][$key] = $val;
+								}
+							}
+							else
+							{//
+								$tmp[$n] = $v;
 							}
 						}
-						else
-						{//
-							$tmp[$n] = $v;
-						}
+						$id++;
+						$this->response['data'][$num] = $tmp;
 					}
-					$id++;
-					$this->response['data'][$num] = $tmp;
-				}
-				else
-				{// the data response is text
-					$this->response['data'][$num] = $data['data'];
+					else
+					{// the data response is text
+						$this->response['data'][$num] = $data['data'];
+					}
 				}
 			}
 		}
@@ -310,11 +312,11 @@ class shiftplanning
 		return array(
 			'status' => $this->response['response'][$call_num],
 			'data' => $this->response['data'][$call_num],
-			'error' => $this->response['error'][$call_num]
+			'error' => (isset($response['error']))?$response['error'][$call_num]:''
 		);
 	}
 
-	private function getResponseText( &$code )
+	private function getResponseText( $code )
 	{// return a reason text for a response code
 		switch( $code )
 		{// select a response code to display
@@ -621,7 +623,7 @@ class shiftplanning
 			{//
 				foreach( $this->requests as $key => $request )
 				{//
-					if( $request['filedata'] )
+					if( isset($request['filedata']) && $request['filedata'] )
 					{//
 						$filedata = $request['filedata'];
 						unset( $this->requests[$key]['filedata'] );

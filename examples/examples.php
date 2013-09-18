@@ -1,7 +1,7 @@
 <?php
 
 // require the ShiftPlanning SDK class
-require('./shiftplanning.php');
+require('./../src/shiftplanning.php');
 
 /* set the developer key on class initialization */
 $shiftplanning = new shiftplanning(
