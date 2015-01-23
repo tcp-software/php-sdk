@@ -100,7 +100,7 @@ class shiftplanning
 
 	// constants
 	const session_identifier = 'SP';
-	const api_endpoint = 'http://www.shiftplanning.com/api/';
+	const api_endpoint = 'https://www.shiftplanning.com/api/';
 	const output_type = 'json';
 
 	public function __construct( $config = array() )
