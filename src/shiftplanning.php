@@ -3,7 +3,7 @@
  * ShiftPlanning PHP SDK
  * Version: 1.0
  * Date: 11/01/2010
- * http://www.shiftplanning.com/api/
+ * http://www.humanity.com/api/
  */
 
 /**
@@ -100,7 +100,7 @@ class shiftplanning
 
 	// constants
 	const session_identifier = 'SP';
-	const api_endpoint = 'https://www.shiftplanning.com/api/';
+	const api_endpoint = 'https://www.humanity.com/api/';
 	const output_type = 'json';
 
 	public function __construct( $config = array() )
@@ -160,7 +160,7 @@ class shiftplanning
 			unset( $_SESSION['data'] );
 			
 			# REMOVE COOKIE
-			setcookie("mobile_token", $this->response['token'][0], time()-(30*86400), "/", ".shiftplanning.com");
+			setcookie("mobile_token", $this->response['token'][0], time()-(30*86400), "/", ".humanity.com");
 		}
 		return $logout;
 	}
