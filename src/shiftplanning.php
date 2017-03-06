@@ -1003,12 +1003,15 @@ class shiftplanning
 		);
 	}
 
-	public function getShifts( )
+	public function getShifts( $shift_filters = array( ) )
 	{// get shifts
 		return $this->setRequest(
-			array(
-				'module' => 'schedule.shifts',
-				'method' => 'GET'
+			array_merge(
+				array(
+					'module' => 'schedule.shifts',
+					'method' => 'GET'
+				),
+				$shift_filters
 			)
 		);
 	}
